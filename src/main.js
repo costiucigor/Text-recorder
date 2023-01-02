@@ -1,9 +1,24 @@
 import { createApp } from 'vue'
 import mdiVue from 'mdi-vue/v3'
-import * as mdijs from '@mdi/js'
+import { aliases, mdi } from 'vuetify/iconsets/mdi'
 import Notifications from '@kyvg/vue3-notification'
 import App from './App.vue'
+import 'vuetify/styles'
+import { createVuetify } from 'vuetify'
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
 
-createApp(App).use(mdiVue, {
-    icons: mdijs
-}).use(Notifications).mount('#app')
+const vuetify = createVuetify({
+    components,
+    directives,
+    icons: {
+        defaultSet: 'mdi',
+        aliases,
+        sets: {
+            mdi,
+        }
+    },
+})
+
+
+createApp(App).use(Notifications).use(vuetify).mount('#app')
