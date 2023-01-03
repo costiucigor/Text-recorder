@@ -1,14 +1,20 @@
 <script setup>
 import {useNotification} from "@kyvg/vue3-notification";
+
 const {notify} = useNotification()
 import {ref, onMounted} from 'vue'
+
 const transcript = ref('')
 const text1 = ref('')
 const isRecording = ref(false)
 const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition
 const recording = new Recognition()
 const selected = ref(null)
-const langList = ref([{text:'English', lang: 'en-EN'}, {text:'Russian', lang: 'ru-RU'}, {text:'Romanian', lang:'ro-RO'}])
+const langList = ref([{text: 'English', lang: 'en-EN'}, {text: 'Russian', lang: 'ru-RU'}, {
+  text: 'Romanian',
+  lang: 'ro-RO'
+}])
+
 const changeLang = () => {
   notify({
     text: `Switched to ${selected.value}`,
@@ -33,7 +39,7 @@ const startRecording = () => {
       text: "Recording stopped!",
     });
     isRecording.value = false
-    text1.value = text1.value + ' ' +  transcript.value
+    text1.value = text1.value + ' ' + transcript.value
   }
 }
 
@@ -47,7 +53,6 @@ const showResults = () => {
   }
 }
 
-
 const ToggleMic = () => {
   isRecording.value ? recording.stop() : recording.start()
 }
@@ -60,34 +65,54 @@ onMounted(() => {
 
 <template>
   <v-app>
-    <v-layout class="mx-auto" justify-center align-center>
-      <v-flex xs12 sm8 md6>
-        <div>
-          <h4>Select language</h4>
-          <select v-model="selected" @change="changeLang()" :item="langList" outlined>
-            <option v-for="item in langList"  :value="item.lang">
+    <v-layout>
+      <div class="container">
+        <div class="select-container">
+          <h4>Select language for better recognition</h4>
+          <select
+              class="select"
+              v-model="selected"
+              @change="changeLang()"
+              :item="langList"
+            >
+            <option v-for="item in langList" :value="item.lang">
               {{ item.text }}
             </option>
           </select>
-          <h4>Everything you have said so far</h4>
-          <div class="transcript1">{{ text1 }}</div>
+        </div>
+        <div class="mt-16 ml-16">
           <h1>Say something</h1>
+          <h4>Current information</h4>
+          <v-textarea
+              :value="transcript"
+              class="transcript"
+              filled
+              auto-grow
+          >
+          </v-textarea>
           <div class="btn-box">
             <v-btn
                 dark
                 @click="ToggleMic()"
                 icon
                 :color="!isRecording ? 'grey' : (isRecording ? 'red' : 'red darken-3')"
-                :class="{'animated infinite pulse': isRecording}"
+                :class="{'blob': isRecording}"
             >
-              <v-icon>{{isRecording ? 'mic_off' : 'mic'}}</v-icon>
+              <i class="material-icons">{{ !isRecording ? 'mic' : 'mic_off' }}</i>
             </v-btn>
           </div>
-          <div class="transcript">
-            Current recording: {{ transcript }}
+          <v-divider class="mt-15"></v-divider>
+          <div class="mt-15">
+            <h4>Everything you have said so far</h4>
+            <v-textarea
+                :value="text1"
+                class="transcript1"
+                filled
+                auto-grow
+            ></v-textarea>
           </div>
         </div>
-      </v-flex>
+      </div>
     </v-layout>
   </v-app>
 </template>
@@ -99,20 +124,65 @@ onMounted(() => {
   box-sizing: border-box;
   font-family: 'Fira sans', sans-serif;
 }
+
 body {
   background: #fafafa;
 }
+
 .transcript {
-  display: inline-block;
-  animation: cursorBlink 1s infinite;
+  width: 500px;
 }
+
+.select-container {
+  margin-left: 80px;
+}
+
+.select {
+  border: 1px solid black;
+  width: 300px;
+}
+
 .app-container {
   margin: 50vh 43vw 0;
   width: 50%;
   padding: 10px;
 }
+
 .microphone:hover {
   cursor: pointer;
   color: lightskyblue;
+}
+
+.btn-box {
+  position: absolute;
+  left: 450px;
+  top: 200px;
+}
+
+.container {
+  margin-left: 500px;
+}
+
+.blob {
+  box-shadow: 0 0 0 0 rgba(0, 0, 0, 1);
+  transform: scale(1);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+  }
+
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+  }
+
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+  }
 }
 </style>
