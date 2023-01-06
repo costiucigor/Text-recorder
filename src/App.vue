@@ -1,11 +1,46 @@
 <script setup>
 import VoiceRecognition from "./components/VoiceRecognition.vue";
+import {ref} from "vue";
+import {notify} from "@kyvg/vue3-notification";
+
+const selected = ref(null)   //change name
+const langList = ref([{text: 'English', lang: 'en-EN'}, {text: 'Russian', lang: 'ru-RU'}, {
+  text: 'Romanian',
+  lang: 'ro-RO'
+}])
+
+const changeLang = () => {
+  notify({
+    text: `Switched to ${selected.value}`,
+  });
+}
 </script>
 
 <template>
   <notifications />
-  <voice-recognition />
+  <div class="select-container">
+    <h4>Select language for better recognition</h4>
+    <select
+        class="select"
+        v-model="selected"
+        @change="changeLang()"
+        :item="langList"
+    >
+      <option v-for="item in langList" :value="item.lang">
+        {{ item.text }}
+      </option>
+    </select>
+  </div>
+  <voice-recognition :selected="selected" />
 </template>
 
 <style scoped>
+.select {
+  border: 1px solid black;
+  width: 300px;
+}
+
+.select-container {
+  margin-left: 80px;
+}
 </style>
