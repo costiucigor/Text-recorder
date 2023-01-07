@@ -1,27 +1,30 @@
 <script>
 import {useNotification} from "@kyvg/vue3-notification";
 const {notify} = useNotification()
-import {ref, onMounted, defineComponent, defineProps} from 'vue'
+import {ref, onMounted, defineComponent, toRef, computed} from 'vue'
 const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition
 const recording = new Recognition()
 
 export default defineComponent ({
+props: {
+  selectedLanguage: {
+    type: String,
+    required: true
+  }
+},
 
-  setup () {
-    defineProps({
-      selected: {
-        type: String,
-      }
-    })
-
+  setup (props) {
     const transcript = ref('')
-    const text1 = ref('')
+    const transcriptArea = ref('')
     const isRecording = ref(false)
+    const languageSelected = toRef(props, 'selectedLanguage')
+    const computeSelectedLanguage = computed(
+        () => recording.lang = languageSelected.value
+    )
 
     onMounted(() => {
       startRecording()
       showResults()
-      recording.lang = this.selected.lang
     })
 
     const startRecording = () => {
@@ -39,7 +42,7 @@ export default defineComponent ({
           text: "Recording stopped!",
         });
         isRecording.value = false
-        text1.value = text1.value + ' ' + transcript.value //string template
+        transcriptArea.value = transcriptArea.value + ' ' + transcript.value //string template
       }
     }
 
@@ -59,7 +62,9 @@ export default defineComponent ({
       transcript,
       toggleMic,
       isRecording,
-      text1, //change variable name
+      languageSelected,
+      transcriptArea,
+      computeSelectedLanguage
     }
   }
 })
@@ -91,11 +96,12 @@ export default defineComponent ({
           <v-divider class="mt-15"></v-divider>
           <div class="mt-15">
             <v-textarea
-                :value="text1"
+                v-model="transcriptArea"
                 class="transcript1"
                 filled
                 auto-grow
-            ></v-textarea>
+            >
+            </v-textarea>
           </div>
         </div>
       </div>
