@@ -10,6 +10,10 @@ props: {
   selectedLanguage: {
     type: String,
     required: true
+  },
+  valueOfInput: {
+    type: String,
+    default: ''
   }
 },
 
@@ -97,11 +101,14 @@ props: {
           <div class="mt-15">
             <v-textarea
                 v-model="transcriptArea"
-                class="transcript1"
+                class="transcript"
                 filled
                 auto-grow
             >
             </v-textarea>
+            <div>
+                <slot name="input"></slot>
+            </div>
           </div>
         </div>
       </div>

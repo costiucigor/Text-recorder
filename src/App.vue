@@ -3,6 +3,7 @@ import VoiceRecognition from "./components/VoiceRecognition.vue";
 import {ref} from "vue";
 import {notify} from "@kyvg/vue3-notification";
 
+const text = ref("")
 const selectedLanguage = ref("en-EN")
 const langList = ref([{text: 'English', lang: 'en-EN'}, {text: 'Russian', lang: 'ru-RU'}, {
   text: 'Romanian',
@@ -32,6 +33,9 @@ const changeLang = () => {
     </select>
   </div>
   <voice-recognition :selectedLanguage="selectedLanguage">
+    <template v-slot:input>
+      <input type="text" />
+    </template>
   </voice-recognition>
 </template>
 
