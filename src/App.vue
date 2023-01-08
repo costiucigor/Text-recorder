@@ -33,8 +33,8 @@ const changeLang = () => {
     </select>
   </div>
   <voice-recognition :selectedLanguage="selectedLanguage">
-    <template v-slot:input>
-      <input type="text" />
+    <template v-slot:input="slotProps">
+      <input v-model="slotProps.value" type="text"/>
     </template>
   </voice-recognition>
 </template>

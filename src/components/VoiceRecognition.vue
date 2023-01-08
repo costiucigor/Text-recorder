@@ -107,7 +107,7 @@ props: {
             >
             </v-textarea>
             <div>
-                <slot name="input"></slot>
+                <slot name="input" v-bind:value="transcript"></slot>
             </div>
           </div>
         </div>
